@@ -1,0 +1,175 @@
+@font-face {
+  font-family: 'Anton';
+  src: url('../fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: #120a1c;
+  background-image: linear-gradient(160deg, #1c0f2e 0%, #120a1c 55%, #1a0b1e 100%);
+  color: #f5eef7;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+button, input { font: inherit; }
+
+/* ---------- top bar ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 20px;
+  background: linear-gradient(90deg, #ff2e88 0%, #ff7a3d 45%, #ffb347 70%, #19c2b8 100%);
+  color: #fff;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand-mark {
+  font-family: 'Anton', 'Arial Narrow', sans-serif;
+  font-size: 26px; letter-spacing: 2px; line-height: 1;
+  background: #120a1c; color: #ffd166;
+  padding: 4px 10px 2px; border-radius: 4px;
+  transform: rotate(-2deg); display: inline-block;
+}
+.brand-name { font-family: 'Anton', 'Arial Narrow', sans-serif; font-size: 24px; letter-spacing: 3px; }
+.brand-tag { font-size: 13px; opacity: 0.9; letter-spacing: 1px; text-transform: uppercase; }
+.topbar-note { font-size: 13px; opacity: 0.95; text-align: right; }
+
+/* ---------- layout ---------- */
+.app {
+  display: flex; gap: 24px; align-items: flex-start; justify-content: center;
+  padding: 20px; max-width: 1400px; margin: 0 auto;
+}
+.controls {
+  width: 360px; flex: none;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.panel {
+  background: #1e1229; border: 1px solid #3a2350; border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+.group + .group { border-top: 1px solid #3a2350; padding-top: 14px; }
+.group h2 {
+  margin: 0 0 10px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+  color: #ffb347;
+}
+.hint { margin: 8px 0 0; font-size: 13px; color: #b9a8c9; }
+.row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+/* ---------- buttons ---------- */
+.btn {
+  border: 0; border-radius: 8px; padding: 10px 12px; cursor: pointer;
+  font-weight: 700; color: #fff;
+  background: linear-gradient(135deg, #ff2e88, #ff7a3d);
+}
+.btn:hover { filter: brightness(1.12); }
+.btn.ghost { background: #2c1b3d; border: 1px solid #4d3370; color: #e8dcf2; font-weight: 600; flex: 1; }
+.btn.ghost:hover { border-color: #ff2e88; }
+.export-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.export-buttons .btn { padding: 12px 6px; font-size: 14px; }
+.export-buttons .btn:nth-child(2) { background: linear-gradient(135deg, #ff7a3d, #ffb347); color: #241026; }
+.export-buttons .btn:nth-child(3) { background: linear-gradient(135deg, #19c2b8, #2e86ff); }
+
+.upload {
+  display: block; text-align: center; cursor: pointer;
+  padding: 14px; border-radius: 8px; font-weight: 700;
+  background: linear-gradient(135deg, #ff2e88, #ff7a3d); color: #fff;
+  border: 2px dashed rgba(255, 255, 255, 0.55);
+}
+.upload input { display: none; }
+.upload:hover { filter: brightness(1.12); }
+
+/* ---------- filmstrip ---------- */
+.filmstrip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; min-height: 64px; }
+.filmstrip .empty { color: #8d7aa3; font-size: 13px; align-self: center; }
+.thumb {
+  width: 64px; height: 64px; padding: 0; border: 3px solid transparent; border-radius: 8px;
+  overflow: hidden; cursor: pointer; background: #0d0714;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb:hover { border-color: #ffb347; }
+.thumb.active { border-color: #ff2e88; }
+.samples { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.samples-label { font-size: 13px; color: #b9a8c9; }
+.chip {
+  border: 1px solid #4d3370; background: #2c1b3d; color: #ffd166;
+  border-radius: 999px; padding: 6px 12px; cursor: pointer; font-weight: 600; font-size: 13px;
+}
+.chip:hover { border-color: #ffb347; }
+
+/* ---------- segmented pickers ---------- */
+.segmented { display: flex; gap: 6px; }
+.segmented button {
+  flex: 1; padding: 8px 4px; cursor: pointer; border-radius: 8px;
+  border: 1px solid #4d3370; background: #2c1b3d; color: #e8dcf2; font-size: 13px;
+}
+.segmented button:hover { border-color: #ffb347; }
+.segmented button.active { background: linear-gradient(135deg, #ff2e88, #ff7a3d); border-color: transparent; color: #fff; font-weight: 700; }
+.lay {
+  display: block; height: 26px; margin: 0 auto 4px; width: 40px;
+  border: 2px solid currentColor; border-radius: 3px; position: relative;
+}
+.lay::before, .lay::after { content: ""; position: absolute; background: currentColor; }
+.lay2::before { left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; }
+.lay3::before { left: 58%; top: 0; bottom: 0; width: 2px; margin-left: -1px; }
+.lay3::after { left: 58%; top: 50%; right: 0; height: 2px; margin-top: -1px; }
+.lay4::before { left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; }
+.lay4::after { left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; }
+
+/* ---------- fields ---------- */
+.field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 13px; }
+.field input[type=text] {
+  padding: 10px; border-radius: 8px; border: 1px solid #4d3370;
+  background: #120a1c; color: #fff; font-size: 16px;
+}
+.field input[type=text]:focus { outline: 2px solid #ff2e88; border-color: #ff2e88; }
+.slider-label { display: block; margin-top: 12px; font-size: 13px; font-weight: 600; }
+.slider-label span { color: #ffb347; }
+input[type=range] { width: 100%; margin-top: 6px; accent-color: #ff2e88; }
+.toggles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.toggles label { font-size: 13px; display: flex; gap: 6px; align-items: center; cursor: pointer; }
+.toggles input { accent-color: #ff2e88; width: 16px; height: 16px; }
+
+/* ---------- grades ---------- */
+.grades { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.grades button {
+  display: flex; align-items: center; gap: 8px; padding: 9px 10px; cursor: pointer;
+  border-radius: 8px; border: 1px solid #4d3370; background: #2c1b3d; color: #e8dcf2; font-size: 13px;
+}
+.grades button.active { border-color: #ffb347; box-shadow: 0 0 0 2px rgba(255, 179, 71, 0.35); font-weight: 700; }
+.swatch { width: 22px; height: 22px; border-radius: 6px; flex: none; }
+.grade-sunset .swatch { background: linear-gradient(135deg, #ff7a3d, #ff2e88 55%, #7a1e6e); }
+.grade-neon .swatch { background: linear-gradient(135deg, #ff00c8, #00e5ff); }
+.grade-teal .swatch { background: linear-gradient(135deg, #19c2b8, #0a4d6e); }
+.grade-mono .swatch { background: linear-gradient(135deg, #ffffff, #555 55%, #111); }
+
+/* ---------- stage / preview ---------- */
+.stage { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.stage-head {
+  width: 100%; display: flex; justify-content: space-between;
+  font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #b9a8c9;
+}
+.stage-head #previewSize { color: #ffb347; letter-spacing: 1px; }
+#preview {
+  max-width: 100%; max-height: calc(100vh - 190px);
+  width: auto; height: auto;
+  border-radius: 6px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px #3a2350;
+  cursor: grab; touch-action: none; background: #0d0714;
+}
+#preview.dragging { cursor: grabbing; }
+.stage-hint { margin: 0; font-size: 13px; color: #b9a8c9; text-align: center; }
+#status { margin: 8px 0 0; font-size: 13px; color: #7fe3c8; min-height: 1.2em; }
+
+/* ---------- screenshot mode: cover alone, editor alone ---------- */
+body.shot-cover .topbar, body.shot-cover .controls, body.shot-cover .stage-head, body.shot-cover .stage-hint { display: none; }
+body.shot-cover .app { padding: 0; max-width: none; }
+body.shot-cover .stage { width: 100%; }
+body.shot-cover #preview { max-height: none; max-width: none; width: 100vw; height: 100vh; object-fit: contain; border-radius: 0; box-shadow: none; }
+
+@media (max-width: 900px) {
+  .app { flex-direction: column; }
+  .controls { width: 100%; }
+  .topbar-note { display: none; }
+}
