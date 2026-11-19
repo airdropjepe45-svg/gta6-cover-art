@@ -1,7 +1,7 @@
 // Wires the page: controls, filmstrip, live preview and export. A `?shot=` query sets
 // up a fixed scene for a screenshot instead (./shots.js).
 
-import { createEditorState, addPhotoFile, addSamplePhoto, assignPhotoToPanel, fillAllPanelsWithPhoto, setLayout, resetSelectedPanelCrop, setSelectedPanelZoom, attachPreviewInteraction } from './editor.js';
+import { createEditorState, addPhotoFile, addSamplePhoto, assignPhotoToPanel, fillAllPanelsWithPhoto, setLayout, resetSelectedPanelCrop, setSelectedPanelZoom, attachPreviewInteraction, setPanelGrade } from './editor.js';
 import { drawCoverArt, exportCoverPng, exportSizeById } from './exporter.js';
 import { isGradeId } from './grades.js';
 import { runShot } from './shots.js';
@@ -34,12 +34,35 @@ function drawSelectionOutline() {
   const rect = lastRects[state.selectedPanel];
   if (!rect) return;
   const ctx = canvas.getContext('2d');
+  const pad = Math.max(4, canvas.width * 0.004);
+  const pinkWidth = Math.max(5, canvas.width * 0.006);
   ctx.save();
+  // Thin white outer line first, then the solid bright-pink line inside it.
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = pinkWidth + 4;
+  ctx.strokeRect(rect.x + pad - 2, rect.y + pad - 2, rect.w - 2 * pad + 4, rect.h - 2 * pad + 4);
   ctx.strokeStyle = '#ff2e88';
-  ctx.lineWidth = Math.max(3, canvas.width * 0.004);
-  ctx.setLineDash([18, 10]);
-  ctx.strokeRect(rect.x + 4, rect.y + 4, rect.w - 8, rect.h - 8);
+  ctx.lineWidth = pinkWidth;
+  ctx.strokeRect(rect.x + pad, rect.y + pad, rect.w - 2 * pad, rect.h - 2 * pad);
   ctx.restore();
+}
+
+/** Rebuilds the panel picker buttons: one per panel in the current layout. */
+function renderPanelPicker() {
+  const picker = document.getElementById('panelPicker');
+  picker.innerHTML = '';
+  for (let i = 0; i < state.layout; i += 1) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.panel = String(i);
+    button.textContent = `Panel ${i + 1}`;
+    button.classList.toggle('active', i === state.selectedPanel);
+    button.addEventListener('click', () => {
+      state.selectedPanel = i;
+      redraw();
+    });
+    picker.appendChild(button);
+  }
 }
 
 /** Keeps every control in sync with the state (active buttons, slider, hint text). */
@@ -57,6 +80,8 @@ function syncControls() {
   zoomSlider.value = String(Math.round(t.zoom * 100));
   zoomValue.textContent = `${Math.round(t.zoom * 100)}%`;
   panelHint.textContent = `Panel ${state.selectedPanel + 1} of ${state.layout} selected — drag its photo to pan, scroll to zoom.`;
+  renderPanelPicker();
+  document.getElementById('panelGradeSelect').value = state.panelGrades?.[state.selectedPanel] ?? '';
   filmstrip.querySelectorAll('.thumb').forEach((thumb) => {
     thumb.classList.toggle('active', Number(thumb.dataset.photoId) === selectedPhotoId);
   });
@@ -149,6 +174,19 @@ document.getElementById('layoutPicker').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-layout]');
   if (!button) return;
   setLayout(state, Number(button.dataset.layout));
+  redraw();
+});
+document.getElementById('panelGradeSelect').addEventListener('change', (event) => {
+  const value = event.target.value;
+  setPanelGrade(state, state.selectedPanel, value === '' ? null : value);
+  redraw();
+});
+document.getElementById('usePhotoForPanel').addEventListener('click', () => {
+  if (!selectedPhotoId) {
+    status.textContent = 'Pick a photo first.';
+    return;
+  }
+  assignPhotoToPanel(state, state.selectedPanel, selectedPhotoId);
   redraw();
 });
 document.getElementById('gradePicker').addEventListener('click', (event) => {

@@ -3,7 +3,8 @@
 // and the exported file are the same composition.
 
 import { layoutPanelRects, panelGapFor } from './panels.js';
-import { applyGradeOverlay } from './grades.js';
+import { applyGradeOverlayToRect, drawVignette, gradePhotoFilter } from './grades.js';
+import { effectiveGrade } from './editor.js';
 
 export const EXPORT_SIZES = [
   { id: '1080x1080', label: '1080 × 1080', width: 1080, height: 1080 },
@@ -28,8 +29,15 @@ export function drawCoverArt(canvas, state, width, height) {
   for (let i = 0; i < rects.length; i += 1) {
     drawPanelPhoto(ctx, rects[i], state, i);
   }
+  // Each panel gets its own grade wash, clipped to its rect (a panel override
+  // wins over the cover grade). No full-cover wash here — that would double
+  // the grading on every panel.
+  for (let i = 0; i < rects.length; i += 1) {
+    const r = rects[i];
+    applyGradeOverlayToRect(ctx, effectiveGrade(state, i), r.x, r.y, r.w, r.h);
+  }
   drawPanelSeparators(ctx, rects, width, height);
-  applyGradeOverlay(ctx, state.grade, width, height);
+  drawVignette(ctx, width, height);
   drawCaption(ctx, state.caption, width, height);
   return rects;
 }
@@ -55,9 +63,8 @@ export function drawPanelPhoto(ctx, rect, state, panelIndex) {
   const ph = img.naturalHeight * scale;
   const cx = rect.x + rect.w / 2 + transform.dx;
   const cy = rect.y + rect.h / 2 + transform.dy;
-  if (state.grade === 'mono') {
-    ctx.filter = 'grayscale(1) contrast(1.12) brightness(1.03)';
-  }
+  const filter = gradePhotoFilter(effectiveGrade(state, panelIndex));
+  if (filter) ctx.filter = filter;
   ctx.drawImage(img, cx - pw / 2, cy - ph / 2, pw, ph);
   ctx.filter = 'none';
   const sheen = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h);

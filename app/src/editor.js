@@ -2,6 +2,7 @@
 // wheel to zoom), and the live preview's pointer handling.
 
 import { panelAtPoint } from './panels.js';
+import { isGradeId } from './grades.js';
 
 let nextPhotoId = 1;
 
@@ -28,6 +29,8 @@ export function createEditorState() {
       uppercase: true,
     },
     grade: 'sunset',
+    // Per-panel grade override: null means the panel follows the cover grade.
+    panelGrades: [null, null, null, null],
     exportSizeId: '1080x1080',
   };
 }
@@ -101,6 +104,28 @@ export function fillAllPanelsWithPhoto(state, photoId) {
 export function setLayout(state, count) {
   state.layout = count;
   if (state.selectedPanel >= count) state.selectedPanel = 0;
+}
+
+/**
+ * Sets panel `panelIndex`'s own grade (`gradeIdOrNull`): a grade id pins that
+ * panel to that grade, null makes it follow the cover grade again. Unknown
+ * ids are ignored.
+ */
+export function setPanelGrade(state, panelIndex, gradeIdOrNull) {
+  if (panelIndex < 0 || panelIndex > 3) return;
+  if (!Array.isArray(state.panelGrades)) state.panelGrades = [null, null, null, null];
+  if (gradeIdOrNull === null) {
+    state.panelGrades[panelIndex] = null;
+    return;
+  }
+  if (typeof gradeIdOrNull === 'string' && isGradeId(gradeIdOrNull)) {
+    state.panelGrades[panelIndex] = gradeIdOrNull;
+  }
+}
+
+/** The grade a panel actually renders with: its own override, or the cover grade. */
+export function effectiveGrade(state, panelIndex) {
+  return state.panelGrades?.[panelIndex] ?? state.grade;
 }
 
 /** Resets the selected panel's crop to the photo's natural cover fit. */

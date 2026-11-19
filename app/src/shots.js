@@ -26,6 +26,9 @@ export async function runShot(shot, query, state, redraw, renderFilmstrip) {
     const second = query.get('photo2');
     if (second && layout >= 2) {
       const extra = await addSamplePhoto(state, second);
+      // addPhoto auto-assigns the new photo to the selected panel; put the
+      // first photo back there so the second photo lands ONLY on the last panel.
+      state.assignments[state.selectedPanel] = photo.id;
       state.assignments[state.layout - 1] = extra.id;
     }
   } catch (error) {

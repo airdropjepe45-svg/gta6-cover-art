@@ -19,7 +19,7 @@
       <label class="upload" for="photoInput">+ Add your photos
         <input id="photoInput" type="file" accept="image/*" multiple>
       </label>
-      <p class="hint">Or drop image files onto the preview. Click a photo below, then click a panel to place it.</p>
+      <p class="hint">Or drop image files onto the preview. Click a photo below to replace the selected panel's photo.</p>
       <div class="samples">
         <span class="samples-label">Try a sample:</span>
         <button id="sampleBoulevard" type="button" class="chip">Boulevard</button>
@@ -41,6 +41,21 @@
         <button type="button" data-layout="4" aria-label="Four panels"><span class="lay lay4"></span>4 panels</button>
       </div>
       <p class="hint" id="panelHint">Panel 1 selected &mdash; drag its photo to pan, scroll to zoom.</p>
+      <div class="selected-panel">
+        <span class="selected-panel-label">Selected panel</span>
+        <div class="segmented panel-picker" id="panelPicker" role="group" aria-label="Selected panel"></div>
+        <label class="field">Panel grade
+          <select id="panelGradeSelect">
+            <option value="">Cover grade</option>
+            <option value="sunset">Sunset</option>
+            <option value="neon">Neon Nights</option>
+            <option value="teal">Vice Teal</option>
+            <option value="mono">Mono</option>
+          </select>
+        </label>
+        <button id="usePhotoForPanel" type="button" class="btn ghost">Use selected photo for this panel</button>
+        <p class="hint">A panel grade overrides the cover grade for that panel only; leave it on “Cover grade” to follow the grade in section 4.</p>
+      </div>
       <label class="slider-label">Zoom panel <span id="zoomValue">100%</span>
         <input id="zoomSlider" type="range" min="100" max="300" value="100" step="1">
       </label>
